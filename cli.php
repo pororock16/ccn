@@ -3,7 +3,7 @@ ini_set("memory_limit", "-1");
 date_default_timezone_set("Asia/Jakarta");
 define("OS", strtolower(PHP_OS));
 
-require_once('class/zebra.php');
+require_once('zebra.php');
 
 $curl = new Zebra_cURL();
 
